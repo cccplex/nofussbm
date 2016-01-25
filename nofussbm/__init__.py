@@ -65,11 +65,6 @@ app.logger.setLevel( DEBUG )
 
 # Helpers
 
-def textify( text, code = 200 ):
-	response = make_response( text + '\n', code )
-	response.headers[ 'Content-Type' ] = 'text/plain; charset=UTF-8'
-	return response
-
 def ident2email( ident ):
 	if '@' in ident: email = ident
 	else:
