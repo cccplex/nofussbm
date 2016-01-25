@@ -34,7 +34,7 @@ def tags( db, email ):
 
 def _update_tags( db, email ):
 	
-	db[ 'tags-exapnded' ].remove( { '_id.email': email } ) 
+	db[ 'tags-expanded' ].remove( { '_id.email': email } ) 
 	db.bookmarks.map_reduce( Code( """
 		function() {
 			for ( index in this.tags ) {
@@ -50,8 +50,8 @@ def _update_tags( db, email ):
 			} );
 			return result;
 		}	
-	""" ), query = { 'email': email }, out = SON( [ ( 'merge', 'tags-exapnded' ) ] ) )
-	db[ 'tags-exapnded' ].map_reduce( Code ("""
+	""" ), query = { 'email': email }, out = SON( [ ( 'merge', 'tags-expanded' ) ] ) )
+	db[ 'tags-expanded' ].map_reduce( Code ("""
 		function() {
 			emit( { 'email': this._id.email }, { 'tags': [ [ this._id.tag, this.value.count ] ], 'modified': this.value.modified } );
 		}
