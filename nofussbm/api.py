@@ -51,11 +51,6 @@ def myjsonify( data = None, code = 200, headers = None ):
 
 # Helpers
 
-def textify( text, code = 200 ):
-	response = make_response( text + '\n', code )
-	response.headers[ 'Content-Type' ] = 'text/plain; charset=UTF-8'
-	return response
-
 def new_key( email ):
 	return b64encode( '{0}:{1}'.format( email, hmac.new( Config.SECRET_KEY, email, sha1 ).hexdigest() ) )
 

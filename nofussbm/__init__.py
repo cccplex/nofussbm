@@ -39,7 +39,7 @@ app.config[ 'MONGO_CONNECT' ] = 'False' # http://api.mongodb.org/python/current/
 mongo = PyMongo( app )
 
 from .api import api
-from .helpers import query_from_dict
+from .helpers import query_from_dict, textify
 from .tags import tags
 
 # Register APIs blueprint and setup {before,teardown}_request

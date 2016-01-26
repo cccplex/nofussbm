@@ -19,6 +19,7 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from json import JSONEncoder, JSONDecoder
 from smtplib import SMTP
+from flask import make_response
 
 from bson.objectid import ObjectId, InvalidId
 
@@ -27,6 +28,11 @@ from . import Config
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 ALLOWED_KEYS = set(( 'title', 'url', 'id', 'tags', 'date-added', 'date-modified' ))
+
+def textify( text, code = 200 ):
+	response = make_response( text + '\n', code )
+	response.headers[ 'Content-Type' ] = 'text/plain; charset=UTF-8'
+	return response
 
 def to_id( id_as_str ):
 	res = None
