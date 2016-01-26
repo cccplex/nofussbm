@@ -155,13 +155,13 @@ def put():
 		try:
 			_id = bm[ 'id' ]
 			clean_bm( bm )
-			bm[ 'date-modified' ] = datetime.utcnow()
+#			bm[ 'date-modified' ] = datetime.utcnow()
 			ret = mongo.db.bookmarks.update( { '_id': _id, 'email': g.email }, { '$set': bm } )
 		except ( KeyError, OperationFailure ):
 			result[ 'error' ].append( '#{0}'.format( pos ) )
 			code = 500
 		else:
-			result[ 'error' if ret[ 'err' ] else 'updated' if ret[ 'updatedExisting' ] else 'ignored' ].append( _id )
+			result[ 'error'  if 'err' in ret else 'updated' if 'updatedExisting' in ret else 'ignored' ].append( _id )
 	return myjsonify( result, code )
 
 @api.route( '/', methods = [ 'DELETE' ] )
