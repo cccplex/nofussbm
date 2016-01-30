@@ -25,6 +25,10 @@ function onload() {
 	if ( ! key ) {
 		alert( "Please set your API key in extension's options" );
 	}
+	uri = localStorage.getItem( 'uri' );
+	if ( ! uri ) {
+		alert( "Please set your server uri extension's options" );
+	}
 	chrome.tabs.getSelected( null, function( tab ) {
 		chrome.tabs.sendRequest( tab.id, {}, function handler( response ) {
 			form.url.value = tab.url;
@@ -48,7 +52,7 @@ function postUrl() {
 			form.status.value = 'An error has occurred';
 		}
 	};
-	req.open( 'POST', 'http://nofussbm.herokuapp.com/api/v1/', true );
+	req.open( 'POST', uri, true );
 	req.setRequestHeader( 'Content-Type', 'application/json' );
 	req.setRequestHeader( 'X-Nofussbm-Key', key );
 	req.send( data );

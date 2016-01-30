@@ -22,13 +22,19 @@ var form;
 function onload() {
 	form = document.forms.options;
 	form.key.value = localStorage.getItem( 'key' );
+	form.uri.value = localStorage.getItem( 'uri' );
 }
 
-function set() {
+function setKey() {
 	localStorage.setItem( 'key', form.key.value );
+}
+
+function setUri() {
+	localStorage.setItem( 'uri', form.uri.value );
 }
 
 document.addEventListener( 'DOMContentLoaded', function () {
     onload();
-    document.getElementById( 'key' ).addEventListener( 'change', set );
+    document.getElementById( 'key' ).addEventListener( 'change', setKey );
+    document.getElementById( 'uri' ).addEventListener( 'change', setUri );
 } );
