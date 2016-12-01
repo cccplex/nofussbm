@@ -15,12 +15,13 @@
 # You should have received a copy of the GNU General Public License along with
 # "No Fuss Bookmarks". If not, see <http://www.gnu.org/licenses/>.
 
+import hmac
+import re
+
 from base64 import b64encode, b64decode
 from datetime import datetime
 from functools import wraps
 from hashlib import sha1
-import hmac
-import re
 from urlparse import parse_qs
 
 from flask import Blueprint, make_response, request, g, json, abort
@@ -34,11 +35,6 @@ api = Blueprint( 'api', __name__ )
 
 RANGE_RE = re.compile( r'bookmarks=(\d+)(-(\d+))?' )
 
-
-# Hacks (somehow horrible) to personalize decoding in Flask request.json
-
-from .helpers import setup_json
-setup_json( json )
 
 def myjsonify( data = None, code = 200, headers = None ):
 	data = [] if not data else data
@@ -156,12 +152,13 @@ def put():
 			_id = bm[ 'id' ]
 			clean_bm( bm )
 #			bm[ 'date-modified' ] = datetime.utcnow()
-			ret = mongo.db.bookmarks.update( { '_id': _id, 'email': g.email }, { '$set': bm } )
+			ret = mongo.db.bookmarks.update_one( { '_id': _id, 'email': g.email }, { '$set': bm } )
+			print ret
 		except ( KeyError, OperationFailure ):
 			result[ 'error' ].append( '#{0}'.format( pos ) )
 			code = 500
 		else:
-			result[ 'error'  if 'err' in ret else 'updated' if 'updatedExisting' in ret else 'ignored' ].append( _id )
+			result[ 'updated' if ret.modified_count == 1 else 'ignored' ].append( _id )
 	return myjsonify( result, code )
 
 @api.route( '/', methods = [ 'DELETE' ] )
@@ -172,12 +169,12 @@ def delete():
 	for pos, bm in enumerate( request.json ):
 		try:
 			_id = bm[ 'id' ]
-			ret = mongo.db.bookmarks.remove( { '_id': _id, 'email': g.email } )
+			ret = mongo.db.bookmarks.delete_one( { '_id': _id, 'email': g.email } )
 		except ( KeyError, OperationFailure ):
 			result[ 'error' ].append( '#{0}'.format( pos ) )
 			code = 500
 		else:
-			result[ 'error' if ret[ 'err' ] else 'deleted' if ret[ 'n' ] else 'ignored' ].append( _id )
+			result[ 'deleted' if ret.deleted_count == 1 else 'ignored' ].append( _id )
 	return myjsonify( result, code )
 
 # signup and alias helpers
