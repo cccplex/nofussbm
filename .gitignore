@@ -1,6 +1,7 @@
 *.log
 *.pem
 *.json
+*.pyc
 .env
 packed
 dump
